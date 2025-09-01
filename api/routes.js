@@ -19,6 +19,9 @@ router.use((req, res, next) => {
     next();
 });
 
+// Health
+router.get('/health', (req, res) => res.status(200).json({ status: 'OK' }));
+
 // --- Status və Sessiya Marşrutları ---
 router.get('/status', whatsappController.getClientStatus);
 router.post('/logout', whatsappController.logoutClient);
@@ -42,6 +45,8 @@ router.post('/moderation/stop/remove', whatsappController.removeStopApi);
 // --- Məlumatların İdarəsi Marşrutları ---
 router.get('/products', whatsappController.getProducts);
 router.get('/services', whatsappController.getServices);
+router.get('/products/categories', whatsappController.getProductCategories);
+router.get('/services/categories', whatsappController.getServiceCategories);
 router.get('/orders', whatsappController.getAllOrders);
 router.post('/orders', validate(orderSchema), whatsappController.createOrder);
 

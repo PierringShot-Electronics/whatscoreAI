@@ -172,16 +172,47 @@ function removeStopApi(req, res) {
 
 // --- Məlumatların İdarəsi (Products, Services, Orders) ---
 function getProducts(req, res) {
-  const q = req.query.q;
+  const { q, category, min_price, max_price } = req.query || {};
+  const min = Number(min_price);
+  const max = Number(max_price);
+  let data = [];
   if (q) {
-    const results = productManager.searchKnowledgeBase(q, { limit: 10 });
-    return res.status(200).json({ status: "OK", query: q, count: results.length, data: results });
+    data = productManager.searchKnowledgeBase(q, { limit: 50 });
+  } else {
+    data = productManager.getProducts();
   }
-  res.status(200).json({ status: "OK", data: productManager.getProducts() });
+  if (category) {
+    const lc = String(category).toLowerCase();
+    data = data.filter(p => String(p.category || '').toLowerCase() === lc);
+  }
+  const toPrice = (p) => Number(p.sale_price || (Number(p.cost_price || 0) * (1 + Number(p.profit_margin || 0))));
+  if (!isNaN(min)) data = data.filter(p => toPrice(p) >= min);
+  if (!isNaN(max)) data = data.filter(p => toPrice(p) <= max);
+  return res.status(200).json({ status: "OK", count: data.length, data });
 }
 
 function getServices(req, res) {
-    res.status(200).json({ status: "OK", data: serviceManager.getServices() });
+  const { category, min_price, max_price, q } = req.query || {};
+  let data = serviceManager.getServices();
+  if (q && q.length >= 3) data = serviceManager.searchServices(q);
+  if (category) {
+    const lc = String(category).toLowerCase();
+    data = data.filter(s => String(s.category || '').toLowerCase() === lc);
+  }
+  const toPrice = (s) => Number(s.sale_price || s.price || 0);
+  const min = Number(min_price);
+  const max = Number(max_price);
+  if (!isNaN(min)) data = data.filter(s => toPrice(s) >= min);
+  if (!isNaN(max)) data = data.filter(s => toPrice(s) <= max);
+  return res.status(200).json({ status: 'OK', count: data.length, data });
+}
+
+function getProductCategories(req, res) {
+  return res.status(200).json({ status: 'OK', data: productManager.getProductCategories() });
+}
+
+function getServiceCategories(req, res) {
+  return res.status(200).json({ status: 'OK', data: serviceManager.getServiceCategories() });
 }
 
 function getAllOrders(req, res) {
@@ -345,6 +376,8 @@ module.exports = {
   // Məlumatlar
   getProducts,
   getServices,
+  getProductCategories,
+  getServiceCategories,
   getAllOrders,
   createOrder,
   // Söhbətlər

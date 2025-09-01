@@ -1,0 +1,9 @@
+id,name,description,category,price,cost,profit_margin,sale_price,tags
+S001,Screen Repair Basic,Phone screen glass replacement,Repair,30,15,0.2,36,screen|phone|repair|basic
+S002,Battery Replacement,Replace battery with new one,Repair,20,8,0.3,26,battery|phone|repair
+S003,Diagnostics,Full device diagnostics with report,Service,10,2,0.5,15,diagnostics|testing
+S004,Screen Repair Premium,Full-screen + frame alignment,Repair Package,55,25,0.3,72,screen|premium|package
+S005,Battery + Clean Combo,Battery replacement + internal cleaning,Repair Package,35,15,0.3,45,combo|battery|clean
+S006,Data Backup,Backup photos/videos before repair,Service,15,3,0.5,22,data|backup
+S007,Water Damage Treatment,Ultrasonic cleaning and board inspection,Repair,40,18,0.35,54,water|board|repair
+S008,Motherboard Repair (Estimate),Board-level diagnostics and quote,Repair,0,0,0,0,board|estimate|repair

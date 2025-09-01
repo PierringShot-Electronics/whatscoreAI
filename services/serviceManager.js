@@ -69,4 +69,7 @@ function searchServices(query) {
     });
 }
 
-module.exports = { searchServices, services };
+function getServices() { return services; }
+function getServiceCategories() { return Array.from(new Set(services.map(s => (s.category || '').trim()).filter(Boolean))); }
+
+module.exports = { searchServices, services, getServices, getServiceCategories };

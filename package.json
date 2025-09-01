@@ -10,7 +10,8 @@
     "test:watch": "node ./node_modules/mocha/bin/mocha.js \"test/**/*.spec.js\" --watch",
     "lint": "eslint index.js api controllers middleware services src utils test",
     "clean": "rm -rf .wwebjs_auth && rm -rf .wwebjs_cache",
-    "setup": "bash start.sh"
+    "setup": "bash start.sh",
+    "seed": "node scripts/seed.js"
   },
   "author": "PierringShot",
   "license": "ISC",

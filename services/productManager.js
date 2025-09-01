@@ -109,5 +109,6 @@ module.exports = {
   getProductByName,
   updateProduct,
   getAllProducts,
-  getProducts
+  getProducts,
+  getProductCategories: () => Array.from(new Set(products.map(p => (p.category || '').trim()).filter(Boolean))),
 };

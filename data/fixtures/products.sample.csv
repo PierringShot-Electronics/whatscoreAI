@@ -1,0 +1,11 @@
+id,name,category,description,cost_price,profit_margin,stock,tags
+P001,Kingston A400 240GB SSD,SSD,2.5" SATA SSD for laptops and PCs,45,0.20,15,ssd|hard disk|storage|kingston
+P002,Logitech MX Master 3S,Mouse,Wireless ergonomic mouse with silent clicks,150,0.25,8,mouse|logitech|wireless
+P003,HP 65W Laptop Adapter,Adapter,Original HP 65W charger,30,0.30,20,charger|adapter|hp
+P004,Sandisk Ultra 64GB USB,USB,USB 3.0 flash drive,9,0.50,50,usb|flash|storage
+P005,TP-Link Archer C6 Router,Network,Dual band AC1200 router,39,0.28,12,router|wifi|tplink
+P006,Corsair Vengeance 16GB DDR4 RAM,Laptop,Gaming-grade DDR4 SODIMM 3200MHz,32,0.30,25,ram|memory|laptop
+P007,Seagate Expansion 1TB HDD,Storage,External 2.5" USB 3.0 hard drive,41,0.22,14,hdd|external|storage
+P008,Anker 20W USB-C Charger,Accessories,Fast charging USB-C wall adapter,11,0.45,40,charger|usb-c|anker
+P009,Spigen Screen Protector (iPhone 13),Accessories,Tempered glass 2-pack,6,0.66,60,screen|protector|iphone
+P010,Razer Cynosa V2 Keyboard,Accessories,Spill-resistant RGB gaming keyboard,29,0.35,10,keyboard|gaming|razer
