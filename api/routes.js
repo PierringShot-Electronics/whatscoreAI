@@ -2,13 +2,16 @@
  * WhatsCore.AI - Maverick Edition
  *
  * API Routes - v5.0.2 (FINAL & STABLE)
- * YENILIK: Bütün marşrutlar (routes) ən son whatsappController ilə tam sinxronlaşdirildi.
+ * YENİLİK: Bütün marşrutlar (routes) ən son whatsappController ilə tam sinxronlaşdırıldı.
  * 'Undefined' callback xətası və köhnəlmiş endpointlər tamamilə aradan qaldırıldı.
  */
 const express = require('express');
 const router = express.Router();
 const whatsappController = require('../controllers/whatsappController');
 const { logWithTimestamp } = require('../utils/logger');
+const { validate } = require('../middleware/validate');
+const orderSchema = require('../schemas/order.schema.json');
+const sendSchema = require('../schemas/send.schema.json');
 
 // Middleware: Bütün API sorğularını loglayır
 router.use((req, res, next) => {
@@ -22,16 +25,25 @@ router.post('/logout', whatsappController.logoutClient);
 router.post('/reset', whatsappController.resetClientSession);
 
 // --- Mesaj Göndərmə Marşrutları ---
-router.post('/send/text', whatsappController.sendText);
-router.post('/send/media', whatsappController.sendMedia);
-router.post('/send/location', whatsappController.sendLocation);
-router.post('/send/contact', whatsappController.sendContact);
+router.post('/send/text', validate(sendSchema), whatsappController.sendText);
+router.post('/send/media', validate(sendSchema), whatsappController.sendMedia);
+router.post('/send/location', validate(sendSchema), whatsappController.sendLocation);
+router.post('/send/contact', validate(sendSchema), whatsappController.sendContact);
+// Flexible endpoints: GET/POST /send will call sendAny (validate POST bodies)
+router.get('/send', whatsappController.sendAny);
+router.post('/send', validate(sendSchema), whatsappController.sendAny);
+
+// Blacklist and STOP management
+router.post('/moderation/blacklist/add', whatsappController.addToBlacklistApi);
+router.post('/moderation/blacklist/remove', whatsappController.removeFromBlacklistApi);
+router.post('/moderation/stop/add', whatsappController.addStopApi);
+router.post('/moderation/stop/remove', whatsappController.removeStopApi);
 
 // --- Məlumatların İdarəsi Marşrutları ---
 router.get('/products', whatsappController.getProducts);
 router.get('/services', whatsappController.getServices);
 router.get('/orders', whatsappController.getAllOrders);
-router.post('/orders', whatsappController.createOrder);
+router.post('/orders', validate(orderSchema), whatsappController.createOrder);
 
 // --- Söhbət (Chat) İdarəetmə Marşrutları ---
 router.get('/chats', whatsappController.getChats);

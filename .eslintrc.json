@@ -1,0 +1,28 @@
+{
+  "root": true,
+  "env": {
+    "es2021": true,
+    "node": true
+  },
+  "extends": ["eslint:recommended"],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "script"
+  },
+  "rules": {
+    "indent": "off",
+    "quotes": "off",
+    "semi": "off",
+    "no-console": "off",
+    "no-unused-vars": "off",
+    "no-undef": "warn",
+    "no-empty": "off",
+    "no-constant-condition": "off"
+  },
+  "overrides": [
+    {
+      "files": ["test/**/*.js"],
+      "env": { "mocha": true }
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WhatsCore Admin</title>
+    <style>
+      body { font-family: system-ui, Arial; margin: 20px }
+      textarea { width: 100%; height: 6rem }
+      button { margin-top: 0.5rem }
+      .list { margin-top: 1rem }
+    </style>
+  </head>
+  <body>
+    <h1>WhatsCore Admin</h1>
+    <p>Manage blacklist and stop lists</p>
+    <div style="background:#f6f6f6;padding:10px;border-radius:6px;margin-bottom:12px">
+      <strong>Credentials hint:</strong>
+      <div>Suggested username: <code>admin</code></div>
+      <div>Use the password set in the environment variable <code>ADMIN_PASSWORD</code>.</div>
+      <div style="margin-top:6px">cURL example:
+        <pre>curl -u admin:YOUR_ADMIN_PASSWORD "http://localhost:9876/api/moderation/blacklist"</pre>
+      </div>
+    </div>
+
+    <section>
+      <h2>Blacklist</h2>
+      <div>
+        <input id="bl-phone" placeholder="+1555..." />
+        <button id="bl-add">Add</button>
+      </div>
+      <div class="list">
+        <pre id="bl-list">Loading...</pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Stop list</h2>
+      <div>
+        <input id="stop-phone" placeholder="+1555..." />
+        <button id="stop-add">Add</button>
+      </div>
+      <div class="list">
+        <pre id="stop-list">Loading...</pre>
+      </div>
+    </section>
+
+    <script>
+      const api = (path, opts) => fetch(path, opts).then(r=>r.json().catch(()=>null))
+
+      async function load() {
+        const bl = await api('/api/moderation/blacklist')
+        document.getElementById('bl-list').textContent = JSON.stringify(bl || [], null, 2)
+        const stop = await api('/api/moderation/stop')
+        document.getElementById('stop-list').textContent = JSON.stringify(stop || [], null, 2)
+      }
+
+      document.getElementById('bl-add').addEventListener('click', async ()=>{
+        const phone = document.getElementById('bl-phone').value.trim()
+        if(!phone) return alert('phone required')
+        await api('/api/moderation/blacklist', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({phone})})
+        document.getElementById('bl-phone').value=''
+        load()
+      })
+
+      document.getElementById('stop-add').addEventListener('click', async ()=>{
+        const phone = document.getElementById('stop-phone').value.trim()
+        if(!phone) return alert('phone required')
+        await api('/api/moderation/stop', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({phone})})
+        document.getElementById('stop-phone').value=''
+        load()
+      })
+
+      load()
+    </script>
+  </body>
+</html>

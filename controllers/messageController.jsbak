@@ -1,0 +1,199 @@
+/**
+ * WhatsCore.AI - Maverick Edition
+ *
+ * Mesaj Controller (Controller) - v4.5.3 (Multimodal, Fayl Təmizlənməsi, Lokal Tarixçə Dəstəyi)
+ * YENİLİK: userInput.media həmişə massiv kimi təyin edilir və mesajları lokal JSON fayllarına saxlayır.
+ */
+const { getAIResponse } = require("../services/ai");
+const mediaProcessor = require("../services/mediaProcessor");
+const { logWithTimestamp } = require("../utils/logger");
+const fs = require("fs-extra"); // Temporary files-ı silmək üçün import
+const { saveHistory } = require("../services/historyManager"); // Lokal fayl əsaslı saveHistory funksiyasını import etdik
+
+const messageBuffer = {};
+const bufferTimeout = (process.env.BUFFER_TIMEOUT_SECONDS || 8) * 1000;
+
+// Müvəqqəti faylları izləmək üçün bir massiv
+const temporaryFiles = [];
+
+async function replyToMessage(client, chatId, responseText) {
+  try {
+    if (!responseText || responseText.trim() === "") return;
+    const sentMessage = await client.sendMessage(chatId, responseText.trim());
+    const sentMessageId = sentMessage.id._serialized;
+    logWithTimestamp(
+      `✅ Cavab emal edildi və göndərildi: [${chatId}] | Mesaj ID: [${sentMessageId}]`,
+    );
+
+    // Botun göndərdiyi mesajı lokal tarixçəyə yazmaq
+    await saveHistory(
+      chatId,
+      {
+        type: "text",
+        content: responseText.trim(),
+        sender: "assistant",
+        quotedMsgId:
+          message.hasQuotedMsg && message.quotedMsg && message.quotedMsg.id
+            ? message.quotedMsg.id._serialized
+            : null,
+      },
+      sentMessageId,
+    );
+  } catch (error) {
+    logWithTimestamp(`❌ Cavab göndərmə xətası [${chatId}]:`, error.message);
+  }
+}
+
+async function flushBuffer(client, chatId) {
+  if (!messageBuffer[chatId] || messageBuffer[chatId].messages.length === 0)
+    return;
+  const { messages } = messageBuffer[chatId];
+  const combinedText = messages.join("\n");
+  logWithTimestamp(`⏳ Buffer boşaldılır [${chatId}]: "${combinedText}"`);
+  delete messageBuffer[chatId];
+  try {
+    // DÜZƏLİŞ BURADA: `flushBuffer` çağırışında da `media: []` təyin edilir
+    const aiResponse = await getAIResponse(
+      chatId,
+      { text: combinedText, media: [] },
+      "chat",
+    );
+    await replyToMessage(client, chatId, aiResponse);
+  } catch (error) {
+    logWithTimestamp(`❌ Bufferdən AI cavabı alma xətası:`, error);
+    await replyToMessage(
+      client,
+      chatId,
+      "🤖 Üzr istəyirəm, bir xəta baş verdi.",
+    );
+  }
+}
+
+async function handleMessage(client, message) {
+  const chatId = message.from;
+  const chat = await message.getChat();
+  await chat.sendSeen();
+
+  // Statusları və botun öz mesajlarını ignor edirik, yalnız istifadəçi mesajlarını saxlayırıq
+  if (message.fromMe || message.isStatus) {
+    return;
+  }
+
+  // İstifdəçidən gələn mesajı lokal tarixçəyə yazmaq
+  await saveHistory(
+    chatId,
+    {
+      type: message.type,
+      content: message.body || "",
+      sender: "user",
+      quotedMsgId:
+        message.hasQuotedMsg && message.quotedMsg && message.quotedMsg.id
+          ? message.quotedMsg.id._serialized
+          : null,
+    },
+    message.id._serialized,
+  );
+
+  if (message.type === "chat" && message.body.trim() !== "") {
+    chat.sendStateTyping();
+    if (messageBuffer[chatId]?.timer) clearTimeout(messageBuffer[chatId].timer);
+    if (!messageBuffer[chatId]) messageBuffer[chatId] = { messages: [] };
+    messageBuffer[chatId].messages.push(message.body);
+    messageBuffer[chatId].timer = setTimeout(
+      () => flushBuffer(client, chatId).finally(() => chat.clearState()),
+      bufferTimeout,
+    );
+    return;
+  }
+
+  if (messageBuffer[chatId]) await flushBuffer(client, chatId);
+
+  chat.sendStateTyping();
+  // DÜZƏLİŞ BURADA: `userInput.media` həmişə bir massiv olaraq ilkinləşir
+  let userInput = { text: message.body || "", media: [] };
+  let contextType = message.type;
+
+  try {
+    if (message.hasMedia) {
+      const mediaPath = await mediaProcessor.saveMedia(message);
+      temporaryFiles.push(mediaPath);
+
+      if (message.type === "video" || message.type === "ptv") {
+        const { audioPath, framePaths } =
+          await mediaProcessor.processVideo(mediaPath);
+        if (audioPath) {
+          userInput.media.push({
+            path: audioPath,
+            mimeType: "audio/mp3", //Bu hisse mp3  yox mpeg idi
+            type: "audio",
+          });
+          temporaryFiles.push(audioPath);
+        }
+        if (framePaths && framePaths.length > 0) {
+          framePaths.forEach((fp) => {
+            userInput.media.push({
+              path: fp,
+              mimeType: "image/png",
+              type: "image",
+            });
+            temporaryFiles.push(fp);
+          });
+        }
+      } else if (message.type === "audio" || message.type === "ptt") {
+        userInput.media.push({
+          path: mediaPath,
+          mimeType: message.mimetype,
+          type: "audio",
+        });
+      } else {
+        userInput.media.push({
+          path: mediaPath,
+          mimeType: message.mimetype,
+          type: message.type,
+        });
+      }
+    } else if (message.type === "location") {
+      userInput.text = `İstifadəçi bir məkan göndərdi: Lat: ${message.location.latitude}, Lon: ${message.location.longitude}. Bu məkana ən yaxın servis mərkəzini tap.`;
+    } else if (message.type === "product") {
+      userInput.text = `İstifadəçi bir məhsul sorğusu göndərdi.`;
+      if (message.productId) {
+        userInput.productId = message.productId;
+        userInput.text += ` Məhsul ID: ${message.productId}.`;
+      }
+      if (message.body && message.body.trim() !== "") {
+        userInput.text += ` Əlavə məlumat: "${message.body}"`;
+      }
+      contextType = "product_query";
+    }
+
+    const aiResponse = await getAIResponse(chatId, userInput, contextType);
+    await replyToMessage(client, chatId, aiResponse);
+  } catch (error) {
+    logWithTimestamp(
+      `❌ Mesaj emalı zamanı ümumi xəta [${chatId}]:`,
+      error.message,
+    );
+    await replyToMessage(
+      client,
+      chatId,
+      "🤖 Mesajınızı emal edərkən gözlənilməz bir problem yarandı.",
+    );
+  } finally {
+    chat.clearState();
+    await Promise.all(
+      temporaryFiles.map((filePath) =>
+        fs
+          .unlink(filePath)
+          .catch((e) =>
+            logWithTimestamp(
+              `❌ Müvəqqəti fayl silinmə xətası: ${filePath}`,
+              e.message,
+            ),
+          ),
+      ),
+    );
+    temporaryFiles.length = 0;
+  }
+}
+
+module.exports = { handleMessage };

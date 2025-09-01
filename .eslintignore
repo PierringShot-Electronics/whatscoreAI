@@ -1,0 +1,12 @@
+node_modules/
+data/
+logs/
+tmp/
+media/
+.debug/
+docs/
+.github/
+public/
+workflows/
+scripts/
+src/agents/

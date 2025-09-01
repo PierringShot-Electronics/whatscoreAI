@@ -1,0 +1,27 @@
+[
+  {
+    "0": {
+      "role": "user",
+      "content": "quli"
+    },
+    "1": {
+      "role": "assistant",
+      "content": "Salam! Mən *WhatScore AI*, PierringShot Electronics™ şirkətinin WhatsApp AI köməkçisiyəm. Zəhmət olmasa, mənə göndərdiyiniz sorğu və ya suallarla bağlı kömək etmək üçün əlimdən gələni edəcəyəm. \n\nLütfən, daha ətraflı məlumat verin:\n\n1. **Məhsul və ya Xidmət Sorğusu:** Əgər müəyyən bir məhsul və ya xidmət haqqında məlumat istəyirsinizsə, zəhmət olmasa, məhsulun adını və ya xidmət növünü qeyd edin.\n   \n2. **Sifariş və ya Təmir:** Əgər bir sifariş vermək və ya təmir üçün cihazınızı göndərmək istəyirsinizsə, cihazınızın modeli və problemi haqqında məlumat verin.\n\n3. **Digər Sorğular:** Əgər başqa bir sualınız varsa, lütfən, onu da qeyd edin.\n\nMən sizə ən yaxşı şəkildə kömək etməyə hazıram!"
+    },
+    "timestamp": 1755524648389
+  },
+  {
+    "type": "media",
+    "mediaType": "image",
+    "content": "Şəkildə göstərilmiş ekran görüntüsü bir neçə elementi ehtiva edir:\n\n1. **Terminal və ya Komanda Pəncərəsi:**\n   - Ekranın sol tərəfində açıq olan pəncərədə bir terminal və ya komanda sətrinin olduğu görünür. \n   - Burada istifadəçi `pierring@PIERRINGSHOT-PC` adlı kompüterdə çalışır və başqa bir istifadəçi ilə əlaqə qurmağa çalışır.\n\n2. **Mətin və Yazılar:**\n   - Terminal pəncərəsində istifadəçi salamlaşır və PCAP (Packet Capture) fayllarını təhlil etmək üçün kömək istəyir.\n   - PCAP fayllarının təhlili üçün Wireshark və tshark alətlərindən istifadə olunduğu qeyd edilir.\n   - İstifadəçi əlavə məlumat və ya kömək təklif edir.\n\n3. **Əməliyyat Sistemi və Proqramlar:**\n   - Terminalın növü və əməliyyat sistemi məlum deyil, lakin görünən əmrlər və cavablar Linux və ya WSL (Windows Subsystem for Linux) əməliyyat sistemində ola bilər.\n\n4. **Fon və Dizayn:**\n   - Ekranın sağ tərəfi və aşağı hissəsində müxtəlif rənglərdə yazılar, şəkillər və kodlar var. \n   - \"NASTY\", \"BACKDOORING\", \"EXPLOITING\", \"AUTOEXPLOIT\", və \"FLUXION\" kimi sözlər görünür. Bunlar, ehtimal ki, istifadəçinin sisteminə aid özelleşdirmələrdir.\n\n5. **Təhlükəsizlik və Hacking Alətləri:**\n   - Ekranın dizaynı və məzmunu, istifadəçinin təhlükəsizlik və ya penetration testing (penetration testing) ilə məşğul olduğunu göstərir.\n\nBu ekran görüntüsü, ehtimal ki, təhlükəsizlik və ya kompüter sistemlərinin sınaqdan keçirilməsi məqsədilə istifadə olunan bir mühitdən götürülüb.",
+    "messageId": "false_994702353552@c.us_3F66CD9286C445486291",
+    "timestamp": 1755524744326
+  },
+  {
+    "type": "media",
+    "mediaType": "audio",
+    "content": "Səs faylını analiz edərkən xəta baş verdi.",
+    "messageId": "false_994702353552@c.us_3F60FDD56DBBCA90905C",
+    "timestamp": 1755524861303
+  }
+]

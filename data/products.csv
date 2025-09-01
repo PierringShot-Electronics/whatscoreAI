@@ -1,0 +1,6 @@
+id,name,category,cost_price,profit_margin,stock,tags
+P001,Kingston A400 240GB SSD,SSD,45,0.20,15,ssd|hard disk|yaddas|kingston
+P002,Logitech MX Master 3S,Mouse,150,0.25,8,sican|logitech|wireless mouse
+P003,HP 65W Laptop Adapter,Adapter,30,0.30,20,zaryadka|adapter|sarj|hp adapter
+S001,Profilaktik T�mizlik v� Termopasta Dəyişimi,Service,15,1.00,100,termopasta|fan temizliyi|qizma problemi|profilaktika
+S002,Ekran Dəyişimi (15.6" FHD),Service,80,0.25,50,ekran temiri|ekran deyismek|catlamis ekran
