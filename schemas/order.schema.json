@@ -1,0 +1,11 @@
+{
+  "$id": "orderSchema",
+  "type": "object",
+  "properties": {
+    "lead_id": { "type": "string" },
+    "customer_phone": { "type": "string", "minLength": 5 },
+    "item_id": { "type": "string" },
+    "quantity": { "type": "integer", "minimum": 1 }
+  },
+  "required": ["customer_phone", "item_id"]
+}

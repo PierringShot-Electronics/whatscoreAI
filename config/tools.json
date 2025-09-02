@@ -1,0 +1,44 @@
+[
+  {
+    "name": "get_service_details",
+    "description": "Retrieves detailed info (price, stock) for a named service or product",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "service_name": { "type": "string" }
+      },
+      "required": ["service_name"]
+    }
+  },
+  {
+    "name": "create_repair_ticket",
+    "description": "Creates a repair ticket for a customer's device",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "customer_name": { "type": "string" },
+        "device_type": { "type": "string" },
+        "issue_description": { "type": "string" }
+      },
+      "required": ["customer_name","device_type","issue_description"]
+    }
+  },
+  {
+    "name": "get_ticket_status",
+    "description": "Returns current status for a repair ticket",
+    "parameters": { "type": "object", "properties": { "ticket_id": { "type": "string" } }, "required": ["ticket_id"] }
+  },
+  {
+    "name": "send_payment_details",
+    "description": "Sends payment information to a chat for a given reason and amount",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "chat_id": { "type": "string" },
+        "amount": { "type": "number" },
+        "reason": { "type": "string" }
+      },
+      "required": ["chat_id","amount","reason"]
+    }
+  }
+]

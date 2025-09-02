@@ -1,0 +1,10 @@
+{
+  "name": "sales",
+  "states": {
+    "AWAITING_INQUIRY": { "on": { "product_identified": "AWAITING_PURCHASE_CONFIRMATION" } },
+    "AWAITING_PURCHASE_CONFIRMATION": { "on": { "confirmed": "AWAITING_PAYMENT" } },
+    "AWAITING_PAYMENT": { "on": { "paid": "AWAITING_ADDRESS" } },
+    "AWAITING_ADDRESS": { "on": { "address_provided": "COMPLETED" } },
+    "COMPLETED": { "type": "final" }
+  }
+}

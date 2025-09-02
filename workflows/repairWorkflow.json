@@ -1,0 +1,12 @@
+{
+  "name": "repair",
+  "states": {
+    "AWAITING_INQUIRY": { "on": { "create_ticket": "AWAITING_DIAGNOSIS_FEE" } },
+    "AWAITING_DIAGNOSIS_FEE": { "on": { "paid": "DEVICE_IN_DIAGNOSIS" } },
+    "DEVICE_IN_DIAGNOSIS": { "on": { "diagnosed": "AWAITING_DEPOSIT" } },
+    "AWAITING_DEPOSIT": { "on": { "deposit_paid": "IN_REPAIR" } },
+    "IN_REPAIR": { "on": { "repaired": "AWAITING_FINAL_PAYMENT" } },
+    "AWAITING_FINAL_PAYMENT": { "on": { "final_paid": "COMPLETED" } },
+    "COMPLETED": { "type": "final" }
+  }
+}

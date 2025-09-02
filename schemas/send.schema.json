@@ -1,0 +1,14 @@
+{
+  "$id": "sendSchema",
+  "type": "object",
+  "properties": {
+    "number": { "type": "string" },
+    "type": { "type": "string", "enum": ["text","media","location","contact"] },
+    "message": { "type": "string" },
+    "fileUrl": { "type": "string", "format": "uri" },
+    "caption": { "type": "string" },
+    "latitude": { "type": "number" },
+    "longitude": { "type": "number" }
+  },
+  "required": ["number"]
+}
