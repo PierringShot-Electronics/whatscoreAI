@@ -108,4 +108,47 @@ async function createOrder(leadId, customerPhone, itemId, quantity = 1) {
   };
 }
 
-module.exports = { createOrder };
+function getAllOrders() {
+    ensureOrdersFile();
+
+    const fileContents = fs.readFileSync(ordersFilePath, { encoding: 'utf8' });
+    if (!fileContents) return [];
+
+    const lines = fileContents
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+    if (lines.length <= 1) return [];
+
+    return lines
+        .slice(1)
+        .map(line => {
+            const [
+                order_id,
+                lead_id,
+                customer_phone,
+                item_id,
+                quantity,
+                total_price,
+                status,
+                created_at,
+            ] = line.split(',');
+
+            if (!order_id) return null;
+
+            return {
+                order_id: order_id.trim(),
+                lead_id: (lead_id || '').trim() || null,
+                customer_phone: (customer_phone || '').trim(),
+                item_id: (item_id || '').trim(),
+                quantity: Number(quantity) || 0,
+                total_price: Number(total_price) || 0,
+                status: (status || '').trim(),
+                created_at: (created_at || '').trim(),
+            };
+        })
+        .filter(Boolean);
+}
+
+module.exports = { createOrder, getAllOrders };
