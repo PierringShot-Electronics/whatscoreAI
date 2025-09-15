@@ -216,7 +216,12 @@ function getServiceCategories(req, res) {
 }
 
 function getAllOrders(req, res) {
-    res.status(200).json({ status: "OK", data: orderManager.getAllOrders() });
+    try {
+        const orders = orderManager.getAllOrders();
+        res.status(200).json({ status: "OK", data: orders });
+    } catch (error) {
+        res.status(500).json({ status: "Error", message: "Sifarişləri almaq mümkün olmadı.", error: error.message });
+    }
 }
 
 async function createOrder(req, res) {
